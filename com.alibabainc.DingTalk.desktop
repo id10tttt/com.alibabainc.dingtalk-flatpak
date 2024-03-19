@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=DingTalk
+Exec=/app/bin/dingtalk %U
+Terminal=false
+Type=Application
+Icon=com.alibabainc.DingTalk
+StartupWMClass=DingTalk
+Categories=Network;
+Comment=钉钉桌面版

@@ -1,0 +1,143 @@
+id: com.alibabainc.DingTalk
+runtime: org.freedesktop.Platform
+runtime-version: '23.08'
+sdk: org.freedesktop.Sdk
+command: dingtalk
+separate-locales: false
+
+finish-args:
+  - --share=ipc
+  - --share=network
+  - --socket=x11
+  - --socket=pulseaudio
+  - --device=all
+  # System tray icon
+  - --talk-name=org.freedesktop.Notifications
+  - --talk-name=org.kde.StatusNotifierWatcher
+  - --own-name=org.kde.*
+
+  - --talk-name=org.freedesktop.DBus
+  - --talk-name=org.freedesktop.DBus.Proprieties
+  - --system-talk-name=org.freedesktop.DBus
+  - --system-talk-name=org.freedesktop.DBus.Proprieties
+  # Screenshot
+  # - --talk-name=org.gnome.Shell.Screenshot
+  # - --talk-name=org.kde.kwin.Screenshot
+  # Files
+  - --filesystem=xdg-download
+  - --filesystem=xdg-run/pipewire-0
+  - --filesystem=/tmp
+  # IME
+  # - --env=QT_IM_MODULE=
+  # Hidpi scale
+  - --env=QT_AUTO_SCREEN_SCALE_FACTOR=1
+  # Fix `Could not find the Qt platform plugin "wayland"`
+  - --unset-env=QT_QPA_PLATFORM
+
+cleanup:
+  - "/include"
+  - "/lib/pkgconfig"
+  - "/man"
+  - "/share/doc"
+  - "/share/gtk-doc"
+  - "/share/man"
+  - "/share/pkgconfig"
+  - "*.la"
+  - "*.a"
+
+modules:
+
+  - name: libxcrypt
+    buildsystem: simple
+    build-commands:
+      - ./configure --prefix=/app
+      - make
+      - make install
+    sources:
+      - type: archive
+        url: https://github.com/besser82/libxcrypt/releases/download/v4.4.36/libxcrypt-4.4.36.tar.xz
+        sha256: e5e1f4caee0a01de2aee26e3138807d6d3ca2b8e67287966d1fefd65e1fd8943
+    cleanup:
+      - /share/doc
+      - /share/man
+
+  - name: glibc-deb
+    buildsystem: simple
+    build-commands:
+      - bsdtar --to-stdout -xf libc6-amd64_2.38-6_i386.deb data.* | bsdtar -xf -
+      - mkdir -p $FLATPAK_DEST/lib/glibc/lib64
+      - install -Dm644 lib64/* -t $FLATPAK_DEST/lib/glibc/lib64
+    sources:
+      - type: file
+        url: http://ftp.cn.debian.org/debian/pool/main/g/glibc/libc6-amd64_2.38-6_i386.deb
+        sha256: ff6b6c9621ed6d592c434d88a8ff5ca1305a6d3c210a2eebb127e9616236dfee
+        dest-filename: libc6-amd64_2.38-6_i386.deb
+
+  - name: libstdc++-deb
+    buildsystem: simple
+    build-commands:
+      - bsdtar --to-stdout -xf libstdc++6_14-20240315-1_amd64.deb data.* | bsdtar -xf -
+      - mkdir -p $FLATPAK_DEST/lib/libstdc
+      - install -Dm644 usr/lib/x86_64-linux-gnu/* -t $FLATPAK_DEST/lib/libstdc
+    sources:
+      - type: file
+        url: http://ftp.cn.debian.org/debian/pool/main/g/gcc-14/libstdc++6_14-20240315-1_amd64.deb
+        sha256: 1a165d59bcadfa8a63c6431d8413ef78e607ff937c4bf510ce4856b791f99a12
+        dest-filename: libstdc++6_14-20240315-1_amd64.deb
+
+  - name: dingtalk-deb
+    buildsystem: simple
+    build-commands:
+      - bsdtar --to-stdout -xf dingtalk.deb data.* | bsdtar -xf -
+      - mv opt/apps/com.alibabainc.dingtalk/files/* .
+      - mkdir -p $FLATPAK_DEST/dingtalk/current_version
+      - cp -r 7.5.0-Release.40306/* $FLATPAK_DEST/dingtalk/current_version
+      - install -Dm644 version -t $FLATPAK_DEST/dingtalk
+      - install -Dm644 logo.ico -t $FLATPAK_DEST/dingtalk
+    sources:
+      - type: file
+        url: https://dtapp-pub.dingtalk.com/dingtalk-desktop/xc_dingtalk_update/linux_deb/Release/com.alibabainc.dingtalk_7.5.0.40306_amd64.deb
+        sha256: 268787993cccfb06f7764ecdbd79b57df2edea72a36fcdd278d03d3b94e5f621
+        dest-filename: dingtalk.deb
+
+  - name: dingtalk
+    buildsystem: simple
+    build-commands:
+      - install -D Elevator.sh $FLATPAK_DEST/dingtalk/Elevator.sh
+      - install -D dingtalk.sh $FLATPAK_DEST/bin/dingtalk
+      - install -D dde-file-manager.sh $FLATPAK_DEST/bin/dde-file-manager
+      - install -Dm644 com.alibabainc.DingTalk.metainfo.xml -t $FLATPAK_DEST/share/metainfo
+      - install -Dm644 com.alibabainc.DingTalk.png -t $FLATPAK_DEST/share/icons/hicolor/256x256/apps
+      - install -Dm644 com.alibabainc.DingTalk.desktop -t $FLATPAK_DEST/share/applications
+    sources:
+      - type: script
+        dest-filename: dingtalk.sh
+        commands:
+          - |
+            exec /app/dingtalk/Elevator.sh "$@"
+
+      - type: script
+        dest-filename: dde-file-manager.sh
+        commands:
+          - |
+            if [ "$1" == "--show-item" ]; then
+              real_path=$(realpath -m "$2" | xargs dirname | sed "s:^$HOME/xdingtalk_files/:$HOME/.var/app/$FLATPAK_ID/xdingtalk_files/:")
+              echo "real path is $real_path"
+              if [ -d "$real_path" ]; then
+                exec xdg-open "$real_path"
+              else
+                zenity --error --text="Path $real_path not found" --icon-name=com.alibabainc.DingTalk
+              fi
+            fi
+
+      - type: file
+        path: com.alibabainc.DingTalk.metainfo.xml
+
+      - type: file
+        path: com.alibabainc.DingTalk.png
+
+      - type: file
+        path: com.alibabainc.DingTalk.desktop
+
+      - type: file
+        path: Elevator.sh
