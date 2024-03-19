@@ -1,0 +1,51 @@
+name: Build Flatpak Bundle
+on:
+  workflow_dispatch:
+  pull_request:
+
+jobs:
+  build-bundle:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install Flatpak
+        run:
+          |
+          sudo apt update
+          sudo apt upgrade -y
+          sudo apt install -y flatpak flatpak-builder
+          sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+          sudo flatpak install -y org.freedesktop.Platform//23.08
+          sudo flatpak install -y org.freedesktop.Sdk//23.08
+          git config --global protocol.file.allow always # https://github.com/flatpak/flatpak-builder/issues/495
+      - name: Build
+        run:
+          |
+          flatpak-builder build com.alibabainc.DingTalk.yaml --delete-build-dirs --force-clean 
+          flatpak-builder --repo=repo build com.alibabainc.DingTalk.yaml --force-clean
+          flatpak build-bundle ./repo com.alibabainc.DingTalk.flatpak com.alibabainc.DingTalk
+      - name: Get current date
+        id: date
+        run: echo "CURRENT_DATE=$(date -u '+%y%m%d%H%M')" >> $GITHUB_OUTPUT
+      - name: Upload to Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: flatpak-bundle
+          path: com.alibabainc.DingTalk.flatpak
+      - name: Upload to Release
+        if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
+        uses: softprops/action-gh-release@v2
+        with:
+          name: ${{ steps.date.outputs.CURRENT_DATE }}
+          tag_name: ${{ steps.date.outputs.CURRENT_DATE }}
+          files: com.alibabainc.DingTalk
+          body:
+            |
+            install via:
+            ```
+            flatpak install com.alibabainc.DingTalk.flatpak
+            ```
