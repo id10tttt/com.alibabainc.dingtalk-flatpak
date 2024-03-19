@@ -4,7 +4,7 @@
   <name>DingTalk</name>
   <project_license>LicenseRef-proprietary</project_license>
   <developer_name>Alibabainc</developer_name>
-  <summary>Online instant messaging service</summary>
+  <summary>钉钉，让进步发生</summary>
   <summary xml:lang="zh-cn">钉钉</summary>
   <metadata_license>CC0-1.0</metadata_license>
   <launchable type="desktop-id">com.alibabainc.DingTalk.desktop</launchable>
@@ -17,13 +17,23 @@
   <description xml:lang="zh-cn">
     <p>办公就选钉钉。</p>
   </description>
+  <screenshots>
+    <screenshot type="default">
+      <image type="source">https://img.alicdn.com/imgextra/i2/O1CN01U1muil1mEmkij6lks_!!6000000004923-0-tps-3840-2600.jpg</image>
+    </screenshot>
+    <screenshot>
+      <image type="source">https://img.alicdn.com/imgextra/i3/O1CN01L1byYm1nAUeOYSBrj_!!6000000005049-0-tps-1920-1300.jpg</image>
+    </screenshot>
+    <screenshot>
+      <image type="source">https://img.alicdn.com/imgextra/i3/O1CN018Vxmzj1ywXxDaDa9M_!!6000000006643-0-tps-3840-2600.jpg</image>
+    </screenshot>
+  </screenshots>
   <categories>
-    <category>InstantMessaging</category>
     <category>Network</category>
   </categories>
   <releases>
-    <release version="7.5.10-Release.403189" date="2024-03-18"/>
+    <release version="7.5.0-Release.40306" date="2024-03-18"/>
   </releases>
   <content_rating type="oars-1.1"/>
-  <update_contact>dgqcjx@gmail.com</update_contact>
+  <update_contact>dgqcjx_at_gmail.com</update_contact>
 </component>
