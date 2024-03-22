@@ -47,7 +47,7 @@ jobs:
         with:
           name: ${{ steps.date.outputs.CURRENT_DATE }}
           tag_name: ${{ steps.date.outputs.CURRENT_DATE }}
-          files: com.alibabainc.DingTalk
+          files: com.alibabainc.DingTalk.flatpak
           body:
             |
             install via:
