@@ -91,13 +91,13 @@ modules:
       - bsdtar --to-stdout -xf dingtalk.deb data.* | bsdtar -xf -
       - mv opt/apps/com.alibabainc.dingtalk/files/* .
       - mkdir -p $FLATPAK_DEST/dingtalk/current_version
-      - cp -r 7.5.10-Release.404071/* $FLATPAK_DEST/dingtalk/current_version
+      - cp -r 7.5.10-Release.404099/* $FLATPAK_DEST/dingtalk/current_version
       - install -Dm644 version -t $FLATPAK_DEST/dingtalk
       - install -Dm644 logo.ico -t $FLATPAK_DEST/dingtalk
     sources:
       - type: file
-        url: https://dtapp-pub.dingtalk.com/dingtalk-desktop/xc_dingtalk_update/linux_deb/Release/com.alibabainc.dingtalk_7.5.10.404071_amd64.deb
-        sha256: d9c9b1bec6a01f409a1f44244a1e0ce0191393cc0e5a5066bca63974a0eb93d6
+        url: https://dtapp-pub.dingtalk.com/dingtalk-desktop/xc_dingtalk_update/linux_deb/Release/com.alibabainc.dingtalk_7.5.10.404099_amd64.deb
+        sha256: bf0e46da1f91b6fb5b62bdc6eca638d1737d72796c984464ce4f380320aeadd6
         dest-filename: dingtalk.deb
 
   - name: dingtalk
