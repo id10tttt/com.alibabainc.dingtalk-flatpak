@@ -32,6 +32,7 @@
     <category>Network</category>
   </categories>
   <releases>
+    <release version="7.5.20-Release.40605" date="2024-06-05"/>
     <release version="7.5.20-Release.40523" date="2024-05-24"/>
     <release version="7.5.10-Release.404099" date="2024-04-15"/>
     <release version="7.5.10-Release.404071" date="2024-04-09"/>
