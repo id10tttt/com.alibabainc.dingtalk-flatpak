@@ -5,7 +5,7 @@ on:
       version:
         description: 'version'
         required: true
-        default: '7.5.0-Release.40306'
+        default: '7.5.20-Release.40605'
   pull_request:
 
 jobs:
