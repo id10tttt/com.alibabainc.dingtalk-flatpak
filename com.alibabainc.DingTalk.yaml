@@ -64,14 +64,14 @@ modules:
   - name: glibc-deb
     buildsystem: simple
     build-commands:
-      - bsdtar --to-stdout -xf libc6-amd64_2.39-2_i386.deb  data.* | bsdtar -xf -
+      - bsdtar --to-stdout -xf libc6-amd64_i386.deb  data.* | bsdtar -xf -
       - mkdir -p $FLATPAK_DEST/lib/glibc/lib64
       - install -Dm644 lib64/* -t $FLATPAK_DEST/lib/glibc/lib64
     sources:
       - type: file
-        url: http://ftp.cn.debian.org/debian/pool/main/g/glibc/libc6-amd64_2.39-2_i386.deb 
-        sha256: 12a4c69e21f4b3773330467184ed21c1700ab038791ad17b8a7544b46d4717c1
-        dest-filename: libc6-amd64_2.39-2_i386.deb 
+        url: https://mirrors.ustc.edu.cn/debian/pool/main/g/glibc/libc6-amd64_2.39-3_i386.deb
+        sha256: 55a860c8ad7e8c948c0a0c6d5cf1393e3f454ea2f7084ebac42ecfd502d61694
+        dest-filename: libc6-amd64_i386.deb 
 
   - name: libstdc++-deb
     buildsystem: simple
