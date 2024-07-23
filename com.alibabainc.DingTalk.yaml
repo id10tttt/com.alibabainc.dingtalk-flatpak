@@ -66,7 +66,7 @@ modules:
     build-commands:
       - bsdtar --to-stdout -xf libc6-amd64_i386.deb  data.* | bsdtar -xf -
       - mkdir -p $FLATPAK_DEST/lib/glibc/lib64
-      - install -Dm644 lib64/* -t $FLATPAK_DEST/lib/glibc/lib64
+      - cp -r usr/lib64/* -t $FLATPAK_DEST/lib/glibc/lib64
     sources:
       - type: file
         url: https://mirrors.ustc.edu.cn/debian/pool/main/g/glibc/libc6-amd64_2.40-1_i386.deb
@@ -91,7 +91,7 @@ modules:
       - bsdtar --to-stdout -xf dingtalk.deb data.* | bsdtar -xf -
       - mv opt/apps/com.alibabainc.dingtalk/files/* .
       - mkdir -p $FLATPAK_DEST/dingtalk/current_version
-      - cp -r 7.5.20-Release.40605/* $FLATPAK_DEST/dingtalk/current_version
+      - cp -r 7.6.0-Release.40718/* $FLATPAK_DEST/dingtalk/current_version
       - install -Dm644 version -t $FLATPAK_DEST/dingtalk
       - install -Dm644 logo.ico -t $FLATPAK_DEST/dingtalk
     sources:
