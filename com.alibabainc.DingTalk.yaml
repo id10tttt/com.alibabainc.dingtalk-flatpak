@@ -69,8 +69,8 @@ modules:
       - cp -r usr/lib64/* -t $FLATPAK_DEST/lib/glibc/lib64
     sources:
       - type: file
-        url: https://mirrors.ustc.edu.cn/debian/pool/main/g/glibc/libc6-amd64_2.40-3_i386.deb
-        sha256: f034bc39218b5678ace8fa991b672366e31fab2e0e19800a75e705f01fc19263
+        url: https://mirrors.ustc.edu.cn/debian/pool/main/g/glibc/libc6-amd64_2.40-4_i386.deb
+        sha256: 8cdac660c1532a52a98e8ffdf331e66c084b6b429d4196d27df079de143fdf9f
         dest-filename: libc6-amd64_i386.deb 
 
   - name: libstdc++-deb
