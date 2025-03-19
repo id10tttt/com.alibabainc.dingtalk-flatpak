@@ -1,6 +1,7 @@
 # com.alibabainc.dingtalk-flatpak
 钉钉 flatpak
 
+参考[微信打包](https://github.com/web1n/wechat-universal-flatpak)
 #  自行编译
 ```
 flatpak-builder --user --install --force-clean build-dir com.alibabainc.DingTalk.yaml

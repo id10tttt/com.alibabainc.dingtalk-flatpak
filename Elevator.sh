@@ -1,8 +1,7 @@
 #!/bin/sh
 export QT_QPA_PLATFORM=xcb
-export CURRENT_DINGTALK_VERSION=current_version
-export QT_PLUGIN_PATH=/app/dingtalk/7$CURRENT_DINGTALK_VERSION
-cd /app/dingtalk/$CURRENT_DINGTALK_VERSION
+export QT_PLUGIN_PATH=/app/extra/dingtalk/current_version
+cd /app/extra/dingtalk/current_version
 preload_libs="./libgbm.so "
 
 # check os_info
@@ -52,6 +51,11 @@ if [ "${os_name}" = "kylin" ]; then
         echo loongarch64 branch
         preload_libs="${preload_libs} ./libffi.so.6.0.4 "
     fi
+    os_ver=`cat /etc/os-release | grep juniper`
+    if [ ! -z "${os_ver}" ]; then
+        echo ${os_ver}
+        preload_libs="${preload_libs} ./libstdc++.so.6 "
+    fi
 else
     echo ${os_name} branch
     if [ "${libc_lower}" = "true" ]; then
@@ -75,12 +79,12 @@ if [ "$os_machine" = "mips64" ]; then
 fi
 fi
 
-# preload_libs 
-preload_libs="${preload_libs} /app/lib/glibc/lib/libm.so.6"
+# preload_libs="${preload_libs} /app/lib/glibc/lib64/libm.so.6 /app/lib/libstdc/libstdc++.so.6 "
 preload_libs="/app/lib/glibc/lib64/libm.so.6 /app/lib/libstdc/libstdc++.so.6 "
+# preload_libs 
 echo preload_libs=${preload_libs}
 if [ ! -z "${preload_libs}" ]; then
-    LD_PRELOAD="${preload_libs} " ./com.alibabainc.dingtalk $1
+    LD_PRELOAD="${preload_libs}" ./com.alibabainc.dingtalk $1
 else
     ./com.alibabainc.dingtalk $1
 fi
