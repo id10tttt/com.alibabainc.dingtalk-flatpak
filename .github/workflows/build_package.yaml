@@ -15,25 +15,22 @@ jobs:
       - name: Install Flatpak
         run:
           |
-          sudo apt update
-          sudo apt upgrade -y
-          sudo apt install -y flatpak flatpak-builder
+          sudo apt -qq update
+          sudo apt -qq install -y flatpak flatpak-builder
           sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-          sudo flatpak install -y org.freedesktop.Platform//23.08
-          sudo flatpak install -y org.freedesktop.Sdk//23.08
+          sudo flatpak install --noninteractive --arch=${{ matrix.arch }} org.freedesktop.Platform//23.08 org.freedesktop.Sdk//23.08
           git config --global protocol.file.allow always # https://github.com/flatpak/flatpak-builder/issues/495
       - name: Build
         run:
           |
-          flatpak-builder build com.alibabainc.DingTalk.yaml --delete-build-dirs --force-clean 
-          flatpak-builder --repo=repo build com.alibabainc.DingTalk.yaml --force-clean
-          flatpak build-bundle ./repo com.alibabainc.DingTalk.flatpak com.alibabainc.DingTalk
+          flatpak-builder --arch=x86_64 --install --user build com.alibabainc.DingTalk.yaml
+          flatpak build-bundle --arch=x86_64 ~/.local/share/flatpak/repo/ com.alibabainc.DingTalk-x86_64.flatpak com.alibabainc.DingTalk
 
       - name: Upload to Artifact
         uses: softprops/action-gh-release@v2
         with:
-          name: flatpak-bundle
-          path: com.alibabainc.DingTalk.flatpak
+          name: flatpak-bundle-x86_64
+          path: com.alibabainc.DingTalk-x86_64.flatpak
   
   upload-release:
     if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
