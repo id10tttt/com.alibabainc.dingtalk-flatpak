@@ -58,10 +58,10 @@ jobs:
         with:
           name: ${{ steps.env.outputs.VERSION }}
           tag_name: ${{ steps.env.outputs.VERSION }}-${{ steps.env.outputs.CURRENT_DATE }}
-          files: com.alibabainc.DingTalk.flatpak
+          files: com.alibabainc.DingTalk-x86_64.flatpak
           body:
             |
             install via:
             ```
-            flatpak install com.alibabainc.DingTalk.flatpak
+            flatpak install com.alibabainc.DingTalk-x86_64.flatpak
             ```
