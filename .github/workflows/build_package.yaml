@@ -1,11 +1,6 @@
 name: Build Flatpak Bundle
 on:
   workflow_dispatch:
-    inputs:
-      version:
-        description: 'version'
-        required: true
-        default: '7.5.20-Release.40605'
   pull_request:
 
 jobs:
@@ -20,37 +15,53 @@ jobs:
       - name: Install Flatpak
         run:
           |
-          sudo apt update
-          sudo apt upgrade -y
-          sudo apt install -y flatpak flatpak-builder
+          sudo apt -qq update
+          sudo apt -qq install -y flatpak flatpak-builder
           sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-          sudo flatpak install -y org.freedesktop.Platform//23.08
-          sudo flatpak install -y org.freedesktop.Sdk//23.08
+          sudo flatpak install --noninteractive --arch=x86_64 org.freedesktop.Platform//23.08 org.freedesktop.Sdk//23.08
           git config --global protocol.file.allow always # https://github.com/flatpak/flatpak-builder/issues/495
       - name: Build
         run:
           |
-          flatpak-builder build com.alibabainc.DingTalk.yaml --delete-build-dirs --force-clean 
-          flatpak-builder --repo=repo build com.alibabainc.DingTalk.yaml --force-clean
-          flatpak build-bundle ./repo com.alibabainc.DingTalk.flatpak com.alibabainc.DingTalk
-      - name: Get current date
-        id: date
-        run: echo "CURRENT_DATE=$(date -u '+%y%m%d%H%M')" >> $GITHUB_OUTPUT
+          flatpak-builder --arch=x86_64 --install --user build com.alibabainc.DingTalk.yaml
+          flatpak build-bundle --arch=x86_64 ~/.local/share/flatpak/repo/ com.alibabainc.DingTalk-x86_64.flatpak com.alibabainc.DingTalk
+
       - name: Upload to Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: flatpak-bundle
-          path: com.alibabainc.DingTalk.flatpak
+          name: flatpak-bundle-x86_64
+          path: com.alibabainc.DingTalk-x86_64.flatpak
+  
+  upload-release:
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    needs: build-bundle
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install xmlstarlet
+        run: sudo apt -qq update && sudo apt -qq install -y xmlstarlet
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          merge-multiple: true
+      - name: Get current date & version
+        id: env
+        run:
+          |
+          echo "CURRENT_DATE=$(date -u '+%y%m%d%H%M')" >> $GITHUB_OUTPUT
+          echo "VERSION=$(xmlstarlet sel -t -v //component/releases/release[1]/@version com.alibabainc.DingTalk.metainfo.xml)" >> $GITHUB_OUTPUT
       - name: Upload to Release
-        if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
         uses: softprops/action-gh-release@v2
         with:
-          name: ${{ steps.date.outputs.CURRENT_DATE }}
-          tag_name: ${{ steps.date.outputs.CURRENT_DATE }}
-          files: com.alibabainc.DingTalk.flatpak
+          name: ${{ steps.env.outputs.VERSION }}
+          tag_name: ${{ steps.env.outputs.VERSION }}-${{ steps.env.outputs.CURRENT_DATE }}
+          files: com.alibabainc.DingTalk-x86_64.flatpak
           body:
             |
             install via:
             ```
-            flatpak install com.alibabainc.DingTalk.flatpak
+            flatpak install com.alibabainc.DingTalk-x86_64.flatpak
             ```
