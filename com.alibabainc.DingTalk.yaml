@@ -1,6 +1,6 @@
 id: com.alibabainc.DingTalk
 runtime: org.freedesktop.Platform
-runtime-version: '23.08'
+runtime-version: '24.08'
 sdk: org.freedesktop.Sdk
 command: dingtalk
 separate-locales: false
@@ -69,8 +69,8 @@ modules:
       - cp -r usr/lib64/* -t $FLATPAK_DEST/lib/glibc/lib64
     sources:
       - type: file
-        url: https://mirrors.ustc.edu.cn/debian/pool/main/g/glibc/libc6-amd64_2.41-6_i386.deb
-        sha256: 7044c71e05e4fa59b70eb664cf955d9d9fe80767fa631b56e369dfc16ed74e5f
+        url: https://mirrors.ustc.edu.cn/debian/pool/main/g/glibc/libc6-amd64_2.41-7_i386.deb
+        sha256: 57268b7e16d3586f1bff620db5f1d9dc0cf607dee6b93d5f072f758c9bf0f335
         dest-filename: libc6-amd64_i386.deb 
 
   - name: libstdc++-deb
@@ -89,7 +89,6 @@ modules:
     buildsystem: simple
     build-commands:
       - install -Dm755 apply_extra ${FLATPAK_DEST}/bin/apply_extra
-      - ls -l $FLATPAK_DEST/bin/
       - install -D Elevator.sh $FLATPAK_DEST/bin/Elevator.sh
       - install -D dingtalk.sh $FLATPAK_DEST/bin/dingtalk
       - install -D dde-file-manager.sh $FLATPAK_DEST/bin/dde-file-manager
@@ -99,9 +98,11 @@ modules:
     sources:      
       - type: script
         commands:
+          - export LANG=en_US.UTF-8
+          - export LC_ALL=en_US.UTF-8
           - bsdtar -O -xf dingtalk.deb data.* | bsdtar --no-same-owner -xf -
           - mkdir -p dingtalk/current_version
-          - cp -R opt/apps/com.alibabainc.dingtalk/files/7.6.45-Release.5032501/* dingtalk/current_version/
+          - cp -R opt/apps/com.alibabainc.dingtalk/files/7.6.45-Release.5041701/* dingtalk/current_version/
           - cp opt/apps/com.alibabainc.dingtalk/files/version dingtalk/
           - cp opt/apps/com.alibabainc.dingtalk/files/logo.ico dingtalk/
           - rm -rf dingtalk.deb usr opt
@@ -128,13 +129,13 @@ modules:
       - type: extra-data
         filename: dingtalk.deb
         only-arches: [x86_64]
-        url: https://dtapp-pub.dingtalk.com/dingtalk-desktop/xc_dingtalk_update/linux_deb/Release/signed_com.alibabainc.dingtalk_7.6.45.5032501_amd64.deb
-        sha256: b71adc99af3c2c9fc0526479dfe2ef7b78f837d624a58c12f33c7a4c2757fdad
-        size: 344675352
+        url: https://dtapp-pub.dingtalk.com/dingtalk-desktop/xc_dingtalk_update/linux_deb/Release/signed_com.alibabainc.dingtalk_7.6.45.5041701_amd64.deb
+        sha256: 1f811afd111d79030e8c641d709187dfba4b23e92661717a90eb0b4a1a4f559f
+        size: 344637180
       
       - type: extra-data
         filename: dingtalk.deb
         only-arches: [aarch64]
-        url: https://dtapp-pub.dingtalk.com/dingtalk-desktop/xc_dingtalk_update/linux_deb/Release/signed_com.alibabainc.dingtalk_7.6.45.5032501_arm64.deb
-        sha256: 361777b01022fb5364c2eb06396bc3fbb96db44fb9479ae90c8a7a4206bc8493
-        size: 331190704
+        url: https://dtapp-pub.dingtalk.com/dingtalk-desktop/xc_dingtalk_update/linux_deb/Release/signed_com.alibabainc.dingtalk_7.6.45.5041701_arm64.deb
+        sha256: a7294d8bc2d672ec3de63864617e0489d33c8a5ffb110d46d7d0871107d85372
+        size: 331202892
