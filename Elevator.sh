@@ -79,12 +79,12 @@ if [ "$os_machine" = "mips64" ]; then
 fi
 fi
 
-# preload_libs="${preload_libs} /app/lib/glibc/lib64/libm.so.6 /app/lib/libstdc/libstdc++.so.6 "
-preload_libs="/app/lib/glibc/lib64/libm.so.6 /app/lib/libstdc/libstdc++.so.6 "
-# preload_libs 
+# Match the known-good manual launch inside the extracted app directory.
+preload_libs="./dingtalk_dll.so"
+
 echo preload_libs=${preload_libs}
 if [ ! -z "${preload_libs}" ]; then
-    LD_PRELOAD="${preload_libs}" ./com.alibabainc.dingtalk $1
+    LD_PRELOAD="${preload_libs}" exec ./com.alibabainc.dingtalk "$@"
 else
-    ./com.alibabainc.dingtalk $1
+    exec ./com.alibabainc.dingtalk "$@"
 fi
