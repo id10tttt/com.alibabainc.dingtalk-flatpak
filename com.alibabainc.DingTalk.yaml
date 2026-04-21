@@ -1,6 +1,6 @@
 id: com.alibabainc.DingTalk
 runtime: org.freedesktop.Platform
-runtime-version: '23.08'
+runtime-version: '24.08'
 sdk: org.freedesktop.Sdk
 command: dingtalk
 separate-locales: false
@@ -13,6 +13,10 @@ finish-args:
   - --device=all
   # System tray icon
   - --talk-name=org.freedesktop.Notifications
+  - --talk-name=org.freedesktop.FileManager1
+  - --talk-name=org.freedesktop.Flatpak
+  - --talk-name=org.freedesktop.portal.Desktop
+  - --talk-name=org.freedesktop.portal.Documents
   - --talk-name=org.kde.StatusNotifierWatcher
   - --own-name=org.kde.*
 
@@ -25,6 +29,7 @@ finish-args:
   # - --talk-name=org.kde.kwin.Screenshot
   # Files
   - --filesystem=xdg-download
+  - --filesystem=xdg-documents
   - --filesystem=xdg-run/pipewire-0
   - --filesystem=/tmp
   # IME
@@ -65,7 +70,7 @@ modules:
     buildsystem: simple
     build-commands:
       - install -Dm755 apply_extra ${FLATPAK_DEST}/bin/apply_extra
-      - install -D Elevator.sh $FLATPAK_DEST/bin/Elevator.sh
+#      - install -D Elevator.sh $FLATPAK_DEST/bin/Elevator.sh
       - install -D dingtalk.sh $FLATPAK_DEST/bin/dingtalk
       - install -D dde-file-manager.sh $FLATPAK_DEST/bin/dde-file-manager
       - install -Dm644 com.alibabainc.DingTalk.metainfo.xml -t $FLATPAK_DEST/share/metainfo
@@ -82,6 +87,7 @@ modules:
           - cp opt/apps/com.alibabainc.dingtalk/files/version dingtalk/
           - cp opt/apps/com.alibabainc.dingtalk/files/logo.ico dingtalk/
           - rm -f dingtalk/current_version/libm.so.6
+          - rm -f dingtalk/current_version/libstdc++.so.6
           - rm -rf dingtalk.deb usr opt
         dest-filename: apply_extra
 
@@ -99,9 +105,6 @@ modules:
 
       - type: file
         path: com.alibabainc.DingTalk.desktop
-
-      - type: file
-        path: Elevator.sh
 
       - type: extra-data
         filename: dingtalk.deb

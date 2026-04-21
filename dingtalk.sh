@@ -12,6 +12,18 @@ setup_ime_env() {
 
 setup_ime_env
 
+if [ -z "$XDG_DOWNLOAD_DIR" ]; then
+  export XDG_DOWNLOAD_DIR="$HOME/Downloads"
+fi
+
+if [ -z "$XDG_DOCUMENTS_DIR" ]; then
+  export XDG_DOCUMENTS_DIR="$HOME/Documents"
+fi
+
 ulimit -c 0
 
-exec /app/bin/Elevator.sh "$@"
+export QT_QPA_PLATFORM=xcb
+export QT_PLUGIN_PATH=/app/extra/dingtalk/current_version
+cd /app/extra/dingtalk/current_version
+
+exec ./com.alibabainc.dingtalk --no-sandbox --enable-logging=stderr --v=1 --disable-gpu --disable-gpu-compositing "$@"
